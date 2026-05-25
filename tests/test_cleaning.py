@@ -2456,40 +2456,39 @@ class TestFilterRows:
         ):
             ar.filter_rows(df, "name", ">", 1)
 
-    def test_filter_rows_non_string_column_raises_type_error(self):
-        frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
 
-        with pytest.raises(TypeError, match="column must be a non-empty string"):
-            ar.filter_rows(frame, column=123, op="==", value=1)
+def test_filter_rows_rejects_list_like_values(self):
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    list_like_values = [
+        [1, 2],
+        (1, 2),
+        {"a": 1},
+        pd.Series([1, 2]),
+        pd.Index([1, 2]),
+        np.array([1, 2]),
+    ]
 
-    def test_filter_rows_empty_string_column_raises_type_error(self):
-        frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
+    for value in list_like_values:
+        with pytest.raises(TypeError, match="filter_rows value must be a scalar"):
+            ar.filter_rows(df, "a", "==", value)
 
-        with pytest.raises(TypeError, match="column must be a non-empty string"):
-            ar.filter_rows(frame, column="", op="==", value=1)
+def test_filter_rows_non_string_column_raises_type_error(self):
+    frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
 
-    def test_filter_rows_non_string_op_raises_type_error(self):
-        frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
+    with pytest.raises(TypeError, match="column must be a non-empty string"):
+        ar.filter_rows(frame, column=123, op="==", value=1)
 
-        with pytest.raises(TypeError, match="op must be a string"):
-            ar.filter_rows(frame, column="x", op=["=="], value=1)
+def test_filter_rows_empty_string_column_raises_type_error(self):
+    frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
 
-    def test_filter_rows_rejects_list_like_values(self):
-        df = pd.DataFrame({"a": [1, 2, 3]})
+    with pytest.raises(TypeError, match="column must be a non-empty string"):
+        ar.filter_rows(frame, column="", op="==", value=1)
 
-        list_like_values = [
-            [1, 2],
-            (1, 2),
-            {"a": 1},
-            pd.Series([1, 2]),
-            pd.Index([1, 2]),
-            np.array([1, 2]),
-        ]
+def test_filter_rows_non_string_op_raises_type_error(self):
+    frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
 
-        for value in list_like_values:
-            with pytest.raises(TypeError, match="filter_rows value must be a scalar"):
-                ar.filter_rows(df, "a", "==", value)
-
+    with pytest.raises(TypeError, match="op must be a string"):
+        ar.filter_rows(frame, column="x", op=["=="], value=1)
 
 class TestMappingValidation:
     def test_rename_columns_rejects_invalid_mapping_value_type(self, sample_csv):
