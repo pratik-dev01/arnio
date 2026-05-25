@@ -2080,6 +2080,24 @@ class TestFilterRows:
         ):
             ar.filter_rows(df, "name", ">", 1)
 
+    def test_filter_rows_non_string_column_raises_type_error(self):
+        frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
+
+        with pytest.raises(TypeError, match="column must be a non-empty string"):
+            ar.filter_rows(frame, column=123, op="==", value=1)
+
+    def test_filter_rows_empty_string_column_raises_type_error(self):
+        frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
+
+        with pytest.raises(TypeError, match="column must be a non-empty string"):
+            ar.filter_rows(frame, column="", op="==", value=1)
+
+    def test_filter_rows_non_string_op_raises_type_error(self):
+        frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
+
+        with pytest.raises(TypeError, match="op must be a string"):
+            ar.filter_rows(frame, column="x", op=["=="], value=1)
+
 
 class TestMappingValidation:
     def test_rename_columns_rejects_invalid_mapping_value_type(self, sample_csv):
