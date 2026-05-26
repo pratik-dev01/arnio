@@ -834,13 +834,17 @@ class TestPipeline:
         frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
 
         with pytest.raises(TypeError, match="column must be a non-empty string"):
-            ar.pipeline(frame, [("filter_rows", {"column": 123, "op": "==", "value": 1})])
+            ar.pipeline(
+                frame, [("filter_rows", {"column": 123, "op": "==", "value": 1})]
+            )
 
     def test_pipeline_filter_rows_non_string_op_raises_type_error(self):
         frame = ar.from_pandas(pd.DataFrame({"x": [1, 2, 3]}))
-        
+
         with pytest.raises(TypeError, match="op must be a string"):
-            ar.pipeline(frame, [("filter_rows", {"column": "x", "op": ["=="], "value": 1})])
+            ar.pipeline(
+                frame, [("filter_rows", {"column": "x", "op": ["=="], "value": 1})]
+            )
 
 
 def test_get_builtin_step_signatures_returns_normalized_signatures():

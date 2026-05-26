@@ -1211,11 +1211,9 @@ def filter_rows(
     if not isinstance(column, str) or not column.strip():
         raise TypeError(
             f"filter_rows: column must be a non-empty string, got {type(column).__name__!r}"
-    )
+        )
     if not isinstance(op, str):
-        raise TypeError(
-            f"filter_rows: op must be a string, got {type(op).__name__!r}"
-    )
+        raise TypeError(f"filter_rows: op must be a string, got {type(op).__name__!r}")
 
     df = to_pandas(frame) if is_arframe else frame
 
